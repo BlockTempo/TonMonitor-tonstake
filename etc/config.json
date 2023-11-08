@@ -1,0 +1,44 @@
+{
+    "liteClient": {
+      "bin": "/usr/bin/lite-client",
+      "config": "/usr/bin/ton/local.config.json",
+      "retries": 3,
+      "timeout": 15
+    },
+    "params": {
+      "elector_address": "Ef8zMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzM0vF",
+      "system_address": "Ef8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAU",
+      "config_address": "Ef9VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVbxn"
+    },
+    "caches": {
+      "path": "/tmp",
+      "prefix": "ton-monitoring",
+      "ttl": {
+        "validation_cycles": 60,
+        "elections": 60,
+        "complaints": 60,
+        "efficiency": 300,
+        "versions": 7200,
+        "index_transactions": 60,
+        "index_blocks": 60
+      }
+    },
+    "http-api": {
+      "url": "https://toncenter.com/api/v2/jsonRPC",
+      "api_token": ""
+    },
+    "indexer": {
+      "url": "https://toncenter.com/api/index",
+      "api_token": ""
+    },
+    "elections": {
+      "url": "https://elections.toncenter.com"
+    },
+    "software_versions": {
+      "url": "https://software-versions.toncenter.com/",
+      "git_repositories": {
+        "node": "https://api.github.com/repos/ton-blockchain/ton/commits?per_page=100"
+      }
+    }
+  }
+  

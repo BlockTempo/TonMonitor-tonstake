@@ -30,8 +30,8 @@ class LiteClient:
         self.log.log(self.__class__.__name__, 3, 'Executing command : {}'.format(cmd))
         if self.ls_addr:
             args = [self.config["bin"],
-                    "--addr", self.ls_addr,
-                    "--b64", self.ls_key,
+                    # "--addr", self.ls_addr,
+                    # "--b64", self.ls_key,
                     "--verbosity", "0",
                     "--cmd", cmd]
         else:
@@ -46,7 +46,7 @@ class LiteClient:
             args.append(cmd)
 
         if nothrow:
-            process = subprocess.run(args, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            process = subprocess.run(['sh', *args], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                                      timeout=self.config["timeout"])
             return process.stdout.decode("utf-8")
 

@@ -14,7 +14,7 @@ gauge_metric = Gauge('validator_ls_sync', 'Time to last block of LS')
 async def run_external_script():
     while True:
         # Replace 'your_script.py' with the name of your Python script
-        cmd = ["python3", "scripts/check_ls_sync.py", "-c", "etc/config_local.json", "-a", "127.0.0.1:7777", "-b", "asdasda"]
+        cmd = ["python3", "scripts/check_ls_sync.py", "-c", "etc/config.json", "-a", "127.0.0.1:7777", "-b", "asdasda"]
         result = await asyncio.create_subprocess_exec(*cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
         stdout, stderr = await result.communicate()        
 
@@ -64,7 +64,7 @@ async def run_cycle_min_metric ():
 election_participation_metric = Gauge('validator_election_participation', 'Election participation')
 async def run_election_participation_metric(adnlAddr):
     while True:
-        cmd = ["python3", "scripts/check_election_participation.py", "-c", "etc/config_local.json", adnlAddr]
+        cmd = ["python3", "scripts/check_election_participation.py", "-c", "etc/config.json", adnlAddr]
         result = await asyncio.create_subprocess_exec(*cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
         stdout, stderr = await result.communicate()
         
@@ -148,11 +148,20 @@ def run_get_is_mainnet():
     else:
         print(f"Script failed with error: {result.returncode}")  
 
+def generate_ls_local_config():
+    cmd = ["sudo", "/usr/bin/python3", "./support/generate_local_config.py", '-o', '/usr/bin/ton/local.config.json']
+    result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+
+    if result.returncode == 0:
+        print("ls config generated.")
+    else:
+        print(f"Script failed with error: {result.returncode}")  
 
 async def main():
     # Start an HTTP server to expose the metrics
     start_http_server(8888)
     
+    generate_ls_local_config()
     adnlAddr = get_adnl_address()
     port_engine = get_ports_open() # require sudo 
     is_mainnet = run_get_is_mainnet()

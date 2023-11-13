@@ -1,7 +1,7 @@
 {
     "liteClient": {
       "bin": "/usr/bin/lite-client",
-      "config": "/usr/bin/ton/local.config.json",
+      "config": "/srv/TonMonitor-tonstake/local.config.json",
       "retries": 3,
       "timeout": 15
     },

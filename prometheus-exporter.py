@@ -149,7 +149,7 @@ def run_get_is_mainnet():
         print(f"Script failed with error: {result.returncode}")  
 
 def generate_ls_local_config():
-    cmd = ["sudo", "/usr/bin/python3", "./support/generate_local_config.py", '-o', '/usr/bin/ton/local.config.json']
+    cmd = ["sh", "/usr/bin/python3", "./support/generate_local_config.py", '-o', '/srv/TonMonitor-tonstake/local.config.json']
     result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
     if result.returncode == 0:
@@ -157,6 +157,7 @@ def generate_ls_local_config():
     else:
         print(f"Script failed with error: {result.returncode}")  
 
+from scripts import get_is_mainnet
 async def main():
     # Start an HTTP server to expose the metrics
     start_http_server(8888)
@@ -164,7 +165,9 @@ async def main():
     generate_ls_local_config()
     adnlAddr = get_adnl_address()
     port_engine = get_ports_open() # require sudo 
-    is_mainnet = run_get_is_mainnet()
+    # is_mainnet = run_get_is_mainnet()
+    is_mainnet =  get_is_mainnet.run()
+    print(is_mainnet)
     # Update the metric in the background by running the external script
     await asyncio.gather(
         run_external_script(),

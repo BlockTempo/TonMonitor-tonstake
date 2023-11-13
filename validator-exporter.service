@@ -1,0 +1,22 @@
+[Unit]
+Description=Validator Exporter Service
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /srv/tonmonitor-tonstake/prometheus-exporter.py
+StandardInput=tty-force
+StandardOutput=journal
+StandardError=journal
+WorkingDirectory=/home/allenchan
+; User=allenchan
+; Group=google-sudoers
+; User=root
+; Group=root
+User=validator
+Group=validator
+Restart = always
+RestartSec = 30
+
+[Install]
+WantedBy=multi-user.target

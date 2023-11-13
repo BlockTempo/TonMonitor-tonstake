@@ -98,10 +98,11 @@ def get_ports_open():
     # global engine_port
     with open("etc/config.json", 'r') as f:
         data = json.load(f)
-    engine = data.get('addrs')[0].get('port', None)
-    ls = data.get('liteservers')[0].get('port', None)
-    control = data.get('control')[0].get('port', None)
-
+    data = data.get('ports')
+    engine = data.get('addrs', None)
+    ls = data.get('liteservers', None)
+    control = data.get('control', None)
+    
     if engine is not None and ls is not None and control is not None:
         # Set the Info metric to the ports
         ports_open.info({'port_engine': str(engine), 'port_ls': str(ls), 'port_control': str(control)})

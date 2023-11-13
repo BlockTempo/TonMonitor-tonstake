@@ -96,7 +96,7 @@ ports_open = Info('validator_ports_open', 'only get once at the start of exporte
 # engine_port = ""
 def get_ports_open():
     # global engine_port
-    with open("/var/ton-work/db/config.json", 'r') as f:
+    with open("etc/config.json", 'r') as f:
         data = json.load(f)
     engine = data.get('addrs')[0].get('port', None)
     ls = data.get('liteservers')[0].get('port', None)
@@ -155,9 +155,9 @@ def run_get_is_mainnet():
 #     if result.returncode == 0:
 #         print("ls config generated.")
 #     else:
-#         print(f"Script failed with error: {result.returncode}")  
+#         print(f"Script failed with error: {result.returncode``}")  
 
-from scripts import get_is_mainnet
+# from scripts import get_is_mainnet
 async def main():
     # Start an HTTP server to expose the metrics
     start_http_server(8888)

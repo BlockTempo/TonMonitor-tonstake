@@ -4,17 +4,15 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/python3 /srv/tonmonitor-tonstake/prometheus-exporter.py
+ExecStart=/usr/bin/python3 /srv/TonMonitor-tonstake/prometheus-exporter.py
 StandardInput=tty-force
 StandardOutput=journal
 StandardError=journal
 WorkingDirectory=/home/allenchan
 ; User=allenchan
 ; Group=google-sudoers
-; User=root
-; Group=root
-User=validator
-Group=validator
+User=root
+Group=root
 Restart = always
 RestartSec = 30
 

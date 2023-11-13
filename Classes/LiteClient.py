@@ -46,7 +46,7 @@ class LiteClient:
             args.append(cmd)
 
         if nothrow:
-            process = subprocess.run(['sh', *args], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            process = subprocess.run(args, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                                      timeout=self.config["timeout"])
             return process.stdout.decode("utf-8")
 
@@ -56,7 +56,7 @@ class LiteClient:
             self.log.log(self.__class__.__name__, 3, 'liteServer query attempt {}'.format(loop))
             try:
                 start = time.time()
-                process = subprocess.run(args, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                process = subprocess.run(['sh', *args], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                                      timeout=self.config["timeout"])
                 self.log.log(self.__class__.__name__, 3, 'query runtime: {} seconds'.format(time.time() - start))
                 if wait:

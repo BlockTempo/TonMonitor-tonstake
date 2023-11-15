@@ -46,7 +46,7 @@ class LiteClient:
             args.append(cmd)
 
         if nothrow:
-            process = subprocess.run(args, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            process = subprocess.run(['sh', *args], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                                      timeout=self.config["timeout"])
             return process.stdout.decode("utf-8")
 

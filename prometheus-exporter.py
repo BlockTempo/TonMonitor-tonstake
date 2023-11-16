@@ -11,10 +11,9 @@ import aiohttp
 # Create a Gauge metric
 gauge_metric = Gauge('validator_ls_sync', 'Time to last block of LS')
 # Function to run the external Python script and get its output
-async def run_external_script():
+async def run_ls_sync(port_ls):
     while True:
-        # Replace 'your_script.py' with the name of your Python script
-        cmd = ["python3", "scripts/check_ls_sync.py", "-c", "etc/config.json", "-a", "127.0.0.1:7777", "-b", "asdasda"]
+        cmd = ["python3", "scripts/check_ls_sync.py", "-c", "etc/config.json", "-a", "127.0.0.1:%s" % port_ls, "-p", "/var/ton-work/keys/liteserver.pub"] #adhoc use pub 
         result = await asyncio.create_subprocess_exec(*cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
         stdout, stderr = await result.communicate()        
 
@@ -24,6 +23,7 @@ async def run_external_script():
         else:
             # Handle any errors here, for example, log them
             print(f"Script failed with error: {result.returncode}")
+            gauge_metric.set(float(-1))
         
         await asyncio.sleep(5)
 
@@ -106,7 +106,7 @@ def get_ports_open():
     if engine is not None and ls is not None and control is not None:
         # Set the Info metric to the ports
         ports_open.info({'port_engine': str(engine), 'port_ls': str(ls), 'port_control': str(control)})
-        return str(engine)
+        return str(engine), str(ls)
     else:
         # Handle any errors here, for example, log them
         print(f"Script failed with error: some ports not found in JSON")
@@ -165,13 +165,13 @@ async def main():
     
     # generate_ls_local_config()
     adnlAddr = get_adnl_address()
-    port_engine = get_ports_open() # require sudo 
+    port_engine, port_ls = get_ports_open() 
     # is_mainnet = run_get_is_mainnet()
     # is_mainnet =  get_is_mainnet.run()
     # print(is_mainnet)
     # Update the metric in the background by running the external script
     await asyncio.gather(
-        run_external_script(),
+        run_ls_sync(port_ls),
         run_cycle_max_metric(),
         run_cycle_min_metric(),
         run_election_participation_metric(adnlAddr),

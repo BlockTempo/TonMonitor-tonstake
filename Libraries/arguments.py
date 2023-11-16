@@ -29,11 +29,11 @@ def set_liteserver_args(parser):
                         action='store',
                         help='LiteServer address:port - REQUIRED')
 
-    parser.add_argument('-b', '--b64',
+    parser.add_argument('-p', '--pub',
                         required=True,
                         dest='ls_key',
                         action='store',
-                        help='LiteServer base64 key as encoded in network config - REQUIRED')
+                        help='LiteServer pub key as encoded in network config - REQUIRED')
 
 def set_console_args(parser):
     parser.add_argument('-a', '--addr',

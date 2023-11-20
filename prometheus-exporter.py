@@ -5,6 +5,7 @@ from prometheus_client import start_http_server, Gauge, Info
 import time
 import json
 import requests
+import re
 import asyncio
 import aiohttp
 
@@ -106,7 +107,7 @@ def get_ports_open():
     if engine is not None and ls is not None and control is not None:
         # Set the Info metric to the ports
         ports_open.info({'port_engine': str(engine), 'port_ls': str(ls), 'port_control': str(control)})
-        return str(engine), str(ls)
+        return str(engine), str(ls), str(control)
     else:
         # Handle any errors here, for example, log them
         print(f"Script failed with error: some ports not found in JSON")
@@ -148,15 +149,26 @@ def run_get_is_mainnet():
         print("No line found with 'validators_elected_for:65536'")
     else:
         print(f"Script failed with error: {result.returncode}")  
+ 
+time_to_sync_metric = Gauge('validator_time_to_sync', 'Time to sync')
+async def run_time_to_sync_metric(port_control):
+    while True:
+        cmd = ['/usr/bin/ton/validator-engine-console/validator-engine-console', '-k', '/var/ton-work/keys/client', '-p', '/var/ton-work/keys/server.pub', '-a', '127.0.0.1:%s' % port_control, '-v', '0', '--cmd', 'getstats']
+        result = await asyncio.create_subprocess_exec(*cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
+        stdout, stderr = await result.communicate()
+        
+        if result.returncode == 0:
+            output = stdout.decode().strip()
 
-# def generate_ls_local_config():
-#     cmd = ["sh", "/usr/bin/python3", "./support/generate_local_config.py", '-o', '/srv/TonMonitor-tonstake/local.config.json']
-#     result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-
-#     if result.returncode == 0:
-#         print("ls config generated.")
-#     else:
-#         print(f"Script failed with error: {result.returncode``}")  
+            # Extract unixtime and masterchainblocktime
+            unixtime = int(re.search(r'unixtime\s+(\d+)', output).group(1))
+            masterchainblocktime = int(re.search(r'masterchainblocktime\s+(\d+)', output).group(1))
+            # Calculate the delta
+            delta = unixtime - masterchainblocktime
+            time_to_sync_metric.set(delta)
+        else:
+            print(f"Script failed with error: {result.returncode}")
+        await asyncio.sleep(5)
 
 # from scripts import get_is_mainnet
 async def main():
@@ -165,7 +177,7 @@ async def main():
     
     # generate_ls_local_config()
     adnlAddr = get_adnl_address()
-    port_engine, port_ls = get_ports_open() 
+    port_engine, port_ls, port_control = get_ports_open() 
     # is_mainnet = run_get_is_mainnet()
     # is_mainnet =  get_is_mainnet.run()
     # print(is_mainnet)
@@ -176,7 +188,11 @@ async def main():
         run_cycle_min_metric(),
         run_election_participation_metric(adnlAddr),
         run_validator_port_probing_metric(port_engine),
+        run_time_to_sync_metric(port_control),
     )
 
 if __name__ == '__main__':
     asyncio.run(main())
+
+# TODO: get config itself, without sudo permissions  
+# ['/usr/bin/ton/validator-engine-console/validator-engine-console', '-k', '/var/ton-work/keys/client', '-p', '/var/ton-work/keys/server.pub', '-a', '127.0.0.1:51496', '-v', '0', '--cmd', 'getconfig']

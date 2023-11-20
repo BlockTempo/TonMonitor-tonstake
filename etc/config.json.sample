@@ -37,7 +37,13 @@
   "software_versions": {
     "url": "https://software-versions.toncenter.com/",
     "git_repositories": {
-      "node": "https://api.github.com/repos/ton-blockchain/ton/commits?per_page=100"
+      "node": "https://api.github.com/repos/ton-blockchain/ton/commits?per_page=100",
+      "mytonctrl": "https://api.github.com/repos/ton-blockchain/MyTonCtrl/commits?per_page=100"
     }
-  }
+  },
+    "ports": {
+      "addrs": 1000,
+      "liteservers": 1001,
+      "control": 1002
+    }
 }

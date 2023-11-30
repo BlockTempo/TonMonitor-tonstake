@@ -170,6 +170,20 @@ async def run_time_to_sync_metric(port_control):
             print(f"Script failed with error: {result.returncode}")
         await asyncio.sleep(5)
 
+mytoncore_lockfile_exist_metric = Gauge('mytoncore_lockfile_exist', '')
+
+async def run_mytoncore_lockfile_exist_metric():
+    while True:
+        # Check if the file ".local" exists
+        local_file_exists = os.path.exists('/home/allenchan/.local/share/mytoncore/mytoncore.db.lock')
+        # print(f'The file .local exists: {local_file_exists}')
+
+        if local_file_exists != None:
+            mytoncore_lockfile_exist_metric.set(local_file_exists)
+        else:
+            print(f"Script failed with error")
+        await asyncio.sleep(5)
+
 # from scripts import get_is_mainnet
 async def main():
     # Start an HTTP server to expose the metrics
@@ -189,6 +203,7 @@ async def main():
         run_election_participation_metric(adnlAddr),
         run_validator_port_probing_metric(port_engine),
         run_time_to_sync_metric(port_control),
+        run_mytoncore_lockfile_exist_metric()
     )
 
 if __name__ == '__main__':

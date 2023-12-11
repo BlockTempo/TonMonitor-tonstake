@@ -80,7 +80,7 @@ async def run_election_participation_metric(adnlAddr):
 
 adnl_address = Info('validator_adnl_address', 'only get once at the start of exporter')
 def get_adnl_address():
-    with open("/home/allenchan/.local/share/mytoncore/mytoncore.db", 'r') as f:
+    with open("/home/allenchan/.local/share/mytoncore/mytoncore.db", 'rb') as f:
         data = json.load(f)
     adnlAddr = data.get('adnlAddr', None)
 
@@ -97,7 +97,7 @@ ports_open = Info('validator_ports_open', 'only get once at the start of exporte
 # engine_port = ""
 def get_ports_open():
     # global engine_port
-    with open("etc/config.json", 'r') as f:
+    with open("etc/config.json", 'rb') as f:
         data = json.load(f)
     data = data.get('ports')
     engine = data.get('addrs', None)

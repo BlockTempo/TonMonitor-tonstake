@@ -171,7 +171,7 @@ async def run_time_to_sync_metric(port_control):
             print(f"Script failed with error: {result.returncode}")
         await asyncio.sleep(5)
 
-mytoncore_lockfile_exist_metric = Gauge('mytoncore_lockfile_exist', '')
+mytoncore_lockfile_exist_metric = Gauge('validator_mytoncore_lockfile_exist', '')
 
 async def run_mytoncore_lockfile_exist_metric():
     while True:

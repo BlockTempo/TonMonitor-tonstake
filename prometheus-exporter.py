@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import os 
 import subprocess
 from prometheus_client import start_http_server, Gauge, Info
 import time
